@@ -7,10 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -20,12 +17,12 @@ import java.util.stream.Collectors;
 public class UserMealsUtil {
     public static void main(String[] args) {
         List<UserMeal> mealList = Arrays.asList(
-                new UserMeal(LocalDateTime.of(2015, Month.MAY, 30,10,0), "Завтрак", 500),
-                new UserMeal(LocalDateTime.of(2015, Month.MAY, 30,13,0), "Обед", 1000),
-                new UserMeal(LocalDateTime.of(2015, Month.MAY, 30,20,0), "Ужин", 500),
-                new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,10,0), "Завтрак", 1000),
-                new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,13,0), "Обед", 500),
-                new UserMeal(LocalDateTime.of(2015, Month.MAY, 31,20,0), "Ужин", 510)
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
+                new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
         );
         List<UserMealWithExceed> filteredWithExceeded = getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         filteredWithExceeded.forEach(System.out::println);
@@ -34,14 +31,45 @@ public class UserMealsUtil {
 //        .toLocalTime();
     }
 
-    public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<UserMealWithExceed> getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
-        Map<LocalDate, Integer> caloriesSumByDate = mealList.stream().collect(Collectors.groupingBy(um -> um.getDateTime().toLocalDate(),
+       Map<LocalDate, Integer> caloriesSumByDate = mealList.stream().collect(Collectors.groupingBy(um -> um.getDateTime().toLocalDate(),
                 Collectors.summingInt(UserMeal::getCalories)));
 
       return  mealList.stream().filter(um->TimeUtil.isBetween(um.getDateTime().toLocalTime(), startTime, endTime))
-                .map(um->new UserMealWithExceed(um.getDateTime(),um.getDescription(),um.getCalories(), caloriesSumByDate.get(um.getDateTime().toLocalDate())>caloriesPerDay)).collect(Collectors.toList());
+                .map(um->new UserMealWithExceed(um.getDateTime(),um.getDescription(),um.getCalories(), caloriesSumByDate.get(um.getDateTime().toLocalDate())>caloriesPerDay))
+              .collect(Collectors.toList());
 
+
+
+//        List<UserMealWithExceed> res = new ArrayList<>();
+//        List<UserMeal> thisDayMeal = new ArrayList<>();
+//        TimeUtil tu = new TimeUtil();
+//        Map<LocalDate, Integer> map = new HashMap<>();
+//
+//        for (UserMeal um :
+//                mealList) {
+//
+//         if(tu.isBetween(um.getDateTime().toLocalTime(), startTime, endTime))
+//             thisDayMeal.add(um);
+//         LocalDate ld = um.getDateTime().toLocalDate();
+//         int sum = 0;
+//
+//            for (UserMeal um2 :
+//                    mealList) {
+//                if (um2.getDateTime().toLocalDate().equals(ld))
+//                    sum += um2.getCalories();
+//            }
+//           map.put(ld,sum);
+//
+//        }
+//
+//        for (UserMeal meal :
+//                thisDayMeal) {
+//            res.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), caloriesPerDay < map.get(meal.getDateTime().toLocalDate())));
+//        }
+//
+//        return res;
 
 
     }
