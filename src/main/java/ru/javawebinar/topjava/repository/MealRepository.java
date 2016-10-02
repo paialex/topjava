@@ -14,7 +14,7 @@ public interface MealRepository {
 
 
     // null if updated meal do not belong to userId
-    Meal save(Meal Meal, int userId);
+    Meal save(Meal meal, int userId);
 
     // false if meal do not belong to userId
     boolean delete(int id, int userId);
